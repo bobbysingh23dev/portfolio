@@ -69,7 +69,7 @@ export function FooterCTA() {
           <div>
             <p className="mono-label text-xs text-ink">{SITE.brand}</p>
             <p className="mt-1 text-xs text-muted">
-              {SITE.role} — React Native · Next.js · Node · PostgreSQL
+              {SITE.role} — Web · Mobile · APIs · Databases · AI
             </p>
           </div>
 

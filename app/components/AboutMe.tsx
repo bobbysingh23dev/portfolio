@@ -31,18 +31,19 @@ export function AboutMe() {
           className="rounded-2xl border border-line bg-surface/70 p-6 backdrop-blur-md sm:p-8"
         >
           <p className="text-lg leading-relaxed text-ink/90">
-            I&apos;m a full-stack developer who takes products from the first
-            mobile screen to the Postgres schema underneath. My core stack is{" "}
-            <span className="text-cyan">React Native</span>,{" "}
-            <span className="text-cyan">React.js</span> and{" "}
-            <span className="text-cyan">Next.js</span> on the front,{" "}
-            <span className="text-cyan">Node.js</span> and{" "}
-            <span className="text-cyan">PostgreSQL</span> behind it.
+            I&apos;m a full-stack developer who takes products from the first{" "}
+            <span className="text-cyan">screen</span> to the{" "}
+            <span className="text-cyan">database</span> and the{" "}
+            <span className="text-cyan">infrastructure</span> underneath. On the
+            front I work in React, React Native and Next.js; behind it, Node.js
+            APIs backed by <span className="text-cyan">SQL or NoSQL</span> —
+            whichever the problem calls for — plus caching, cloud and CI/CD.
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted sm:text-base">
-            I care about clean data models, fast APIs, and interfaces that feel
-            effortless — and I like owning a feature across every layer rather
-            than handing it off at each boundary. {/* Personalize this paragraph. */}
+            I&apos;m not tied to one tool per layer — I pick what fits the
+            problem, care about clean data models and fast APIs, and like owning
+            a feature across every layer rather than handing it off at each
+            boundary. {/* Personalize this paragraph. */}
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">

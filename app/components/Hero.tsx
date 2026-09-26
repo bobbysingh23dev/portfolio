@@ -27,7 +27,7 @@ const CARDS: Card[] = [
   { n: "01", title: "React Native", sub: "Mobile · Expo", tag: "MOBILE", variant: "phone", tone: "cyan" },
   { n: "02", title: "Next.js 15", sub: "App Router", tag: "FLEET", variant: "chart", tone: "cyan" },
   { n: "03", title: "Node Mesh", sub: "Express API", tag: "gRPC", variant: "nodes", tone: "cyan" },
-  { n: "04", title: "PostgreSQL", sub: "Drizzle · SQL", tag: "SPATIAL", variant: "nodes", tone: "amber" },
+  { n: "04", title: "Databases", sub: "SQL · NoSQL · Cache", tag: "DATA", variant: "nodes", tone: "amber" },
   { n: "05", title: "Tailwind UI", sub: "Design System", tag: "TOKENS", variant: "phone", tone: "cyan" },
   { n: "06", title: "Redis Cache", sub: "Key-Value", tag: "EDGE", variant: "bars", tone: "cyan" },
   { n: "07", title: "REST & Sockets", sub: "Streaming", tag: "DISTRO", variant: "chart", tone: "cyan" },
@@ -94,7 +94,7 @@ export function Hero() {
           <span className="hidden text-muted/80 sm:inline">{"// OPEN TO WORK"}</span>
         </span>
         <span className="mono-label flex items-center gap-3 text-[9px] text-muted">
-          <span className="hidden sm:inline">NODE · POSTGRES · REACT</span>
+          <span className="hidden sm:inline">WEB · MOBILE · APIS · DATA · AI</span>
           <span className="rounded border border-line px-2 py-0.5 text-cyan/80">
             REV 2026.1
           </span>

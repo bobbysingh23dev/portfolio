@@ -17,11 +17,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://bobby-singh.vercel.app"),
   title: "Bobby Singh // Full Stack Developer",
   description:
-    "Bobby Singh — Full Stack Developer building end-to-end products with React Native, React.js, Next.js, Node.js and PostgreSQL.",
+    "Bobby Singh — Full Stack Developer building end-to-end products: web and mobile front-ends, Node.js APIs, SQL & NoSQL databases, and AI features.",
   openGraph: {
     title: "Bobby Singh // Full Stack Developer",
     description:
-      "End-to-end engineering with TypeScript, Node & Postgres. Mobile to database.",
+      "End-to-end engineering across web, mobile, APIs, databases and AI — I pick the right tool per layer, not one fixed stack.",
     type: "website",
   },
 };

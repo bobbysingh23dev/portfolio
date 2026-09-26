@@ -76,7 +76,7 @@ export default function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", fontSize: "28px", color: "#64748b" }}>
-          React Native · Next.js · Node.js · PostgreSQL
+          Web · Mobile · APIs · Databases · AI
         </div>
       </div>
     ),
