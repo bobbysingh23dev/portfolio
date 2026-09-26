@@ -57,7 +57,7 @@ export function Hero() {
       />
 
       {/* ---------- Desktop / tablet: rotating radial orbit ---------- */}
-      <div className="relative z-10 hidden aspect-square w-[min(94vw,780px)] md:block">
+      <div className="relative z-10 hidden aspect-square w-[min(95vw,840px)] md:block">
         {/* Faint guide ring */}
         <div
           aria-hidden
@@ -147,15 +147,15 @@ function CardBody({ card }: { card: OrbitCard }) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <span className="flex size-9 items-center justify-center rounded-md border border-line bg-ground/60 text-ink transition-colors group-hover:border-cyan/60 group-hover:bg-cyan/10 group-hover:text-cyan group-focus-visible:border-cyan/60 group-focus-visible:bg-cyan/10 group-focus-visible:text-cyan sm:size-11">
-          <Icon className="size-4.5 sm:size-6" strokeWidth={2} />
+        <span className="flex size-11 items-center justify-center rounded-lg border border-line bg-ground/60 text-ink transition-colors group-hover:border-cyan/60 group-hover:bg-cyan/10 group-hover:text-cyan group-focus-visible:border-cyan/60 group-focus-visible:bg-cyan/10 group-focus-visible:text-cyan sm:size-13">
+          <Icon className="size-5 sm:size-7" strokeWidth={2} />
         </span>
-        <span className="mono-label text-[10px] text-muted">{card.label}</span>
+        <span className="mono-label text-[11px] text-muted">{card.label}</span>
       </div>
-      <p className="mt-3 text-[15px] font-semibold text-white sm:text-lg">
+      <p className="mt-3.5 text-base font-semibold text-white sm:text-xl">
         {card.title}
       </p>
-      <p className="mono-label mt-1 text-[10px] text-muted">{card.meta}</p>
+      <p className="mono-label mt-1 text-[11px] text-muted">{card.meta}</p>
     </>
   );
 }
@@ -168,7 +168,7 @@ function OrbitCardButton({ card }: { card: OrbitCard }) {
       whileHover={{ scale: 1.2, zIndex: 40 }}
       whileFocus={{ scale: 1.2, zIndex: 40 }}
       transition={{ type: "spring", stiffness: 260, damping: 18 }}
-      className="group relative w-44.5 rounded-2xl border border-line bg-surface/85 p-4 text-left shadow-[0_10px_30px_-18px_#000] backdrop-blur-md transition-[border-color,box-shadow] hover:border-cyan/70 hover:shadow-[0_0_34px_-6px_var(--color-cyan)] focus-visible:border-cyan/70 focus-visible:shadow-[0_0_34px_-6px_var(--color-cyan)] focus-visible:outline-none sm:p-5"
+      className="group relative w-56 rounded-2xl border border-line bg-surface/85 p-5 text-left shadow-[0_10px_30px_-18px_#000] backdrop-blur-md transition-[border-color,box-shadow] hover:border-cyan/70 hover:shadow-[0_0_40px_-6px_var(--color-cyan)] focus-visible:border-cyan/70 focus-visible:shadow-[0_0_40px_-6px_var(--color-cyan)] focus-visible:outline-none sm:p-6"
     >
       <CardBody card={card} />
     </motion.button>
