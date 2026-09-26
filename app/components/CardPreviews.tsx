@@ -1,7 +1,7 @@
 // On-brand SVG placeholders that stand in for real project screenshots.
 // Swap a card's `image` for a real file in /public when you have one.
 
-export type PreviewVariant = "phone" | "chart" | "nodes" | "bars";
+export type PreviewVariant = "phone" | "chart" | "nodes" | "bars" | "neural";
 
 export function Preview({ variant }: { variant: PreviewVariant }) {
   return (
@@ -16,7 +16,50 @@ export function Preview({ variant }: { variant: PreviewVariant }) {
       {variant === "nodes" && <NodesArt />}
       {variant === "phone" && <PhoneArt />}
       {variant === "bars" && <BarsArt />}
+      {variant === "neural" && <NeuralArt />}
     </svg>
+  );
+}
+
+function NeuralArt() {
+  const layers = [
+    [26, [26, 46, 66]],
+    [66, [22, 40, 58, 76]],
+    [106, [30, 50, 70]],
+    [140, [46]],
+  ] as const;
+  return (
+    <g>
+      {layers.slice(0, -1).map(([x, ys], li) => {
+        const [nx, nys] = layers[li + 1];
+        return ys.flatMap((y) =>
+          nys.map((ny, j) => (
+            <line
+              key={`${li}-${y}-${j}`}
+              x1={x}
+              y1={y}
+              x2={nx}
+              y2={ny}
+              stroke="currentColor"
+              strokeWidth="0.6"
+              opacity="0.28"
+            />
+          )),
+        );
+      })}
+      {layers.map(([x, ys], li) =>
+        ys.map((y, j) => (
+          <circle
+            key={`${li}-${j}`}
+            cx={x}
+            cy={y}
+            r={li === layers.length - 1 ? 5 : 3.2}
+            fill="currentColor"
+            opacity={li === layers.length - 1 ? 1 : 0.8}
+          />
+        )),
+      )}
+    </g>
   );
 }
 

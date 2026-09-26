@@ -3,6 +3,7 @@ import { Hero } from "./components/Hero";
 import { AboutMe } from "./components/AboutMe";
 import { SelectedWork } from "./components/SelectedWork";
 import { TechMatrix } from "./components/TechMatrix";
+import { AiEngineering } from "./components/AiEngineering";
 import { FooterCTA } from "./components/FooterCTA";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         <AboutMe />
         <SelectedWork />
         <TechMatrix />
+        <AiEngineering />
         <FooterCTA />
       </main>
     </>

@@ -8,6 +8,7 @@ import { SITE } from "../lib/site";
 const LINKS = [
   { label: "Projects", href: "#work" },
   { label: "Stack", href: "#stack" },
+  { label: "AI", href: "#ai" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];

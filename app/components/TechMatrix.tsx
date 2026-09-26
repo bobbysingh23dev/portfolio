@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Cpu, Database, Layout, type LucideIcon } from "lucide-react";
+import { Cpu, Database, Layout, Sparkles, type LucideIcon } from "lucide-react";
 import { SectionHeading } from "./SelectedWork";
 
 type Column = {
@@ -51,6 +51,21 @@ const COLUMNS: Column[] = [
       "CI/CD",
     ],
   },
+  {
+    icon: Sparkles,
+    label: "INTELLIGENCE",
+    title: "AI & LLMs",
+    skills: [
+      "LLM APIs",
+      "RAG",
+      "Embeddings",
+      "Vector Search",
+      "AI SDK",
+      "Prompt Engineering",
+      "Agents & Tools",
+      "Evals",
+    ],
+  },
 ];
 
 export function TechMatrix() {
@@ -64,10 +79,10 @@ export function TechMatrix() {
         <SectionHeading
           index="03 / TECH STACK"
           title="The tools I build with"
-          blurb="Grouped by the three layers I ship in — client, server, and the data underneath."
+          blurb="Grouped by the layers I ship in — client, server, the data underneath, and the AI on top."
         />
 
-        <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2">
           {COLUMNS.map((col, i) => (
             <MatrixColumn key={col.title} column={col} index={i} />
           ))}

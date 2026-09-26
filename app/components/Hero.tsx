@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SITE } from "../lib/site";
 import { Preview, type PreviewVariant } from "./CardPreviews";
@@ -25,6 +32,7 @@ const CARDS: Card[] = [
   { n: "06", title: "Redis Cache", sub: "Key-Value", tag: "EDGE", variant: "bars", tone: "cyan" },
   { n: "07", title: "REST & Sockets", sub: "Streaming", tag: "DISTRO", variant: "chart", tone: "cyan" },
   { n: "08", title: "System Design", sub: "Topology", tag: "GRAPH", variant: "nodes", tone: "amber" },
+  { n: "09", title: "AI Engineering", sub: "LLM · RAG · Agents", tag: "AI", variant: "neural", tone: "cyan" },
 ];
 
 const START_ANGLE = -90;
@@ -36,7 +44,17 @@ const TONE_BG: Record<Card["tone"], string> = {
   amber: "radial-gradient(120% 100% at 50% 0%, rgba(251,191,36,0.16), transparent 60%), #0b1120",
 };
 
+const ORBIT_DURATION = 44000; // ms per full revolution
+
 export function Hero() {
+  // One shared rotation value drives the ring AND every card's counter-rotation,
+  // so they can never drift out of sync (which tilts individual cards).
+  const reduce = useReducedMotion();
+  const angle = useMotionValue(0);
+  useAnimationFrame((t) => {
+    if (!reduce) angle.set(((t / ORBIT_DURATION) * 360) % 360);
+  });
+
   return (
     <section
       id="top"
@@ -85,7 +103,7 @@ export function Hero() {
 
       {/* ---------- Desktop / tablet: rotating image-card orbit ---------- */}
       <div className="relative z-20 hidden flex-1 items-center justify-center md:flex">
-        <div className="relative aspect-square w-[min(92vw,720px)]">
+        <div className="relative aspect-square w-[min(94vw,772px)]">
           {/* Center identity — fixed while the ring turns */}
           <div className="absolute left-1/2 top-1/2 z-30 w-[min(70vw,300px)] -translate-x-1/2 -translate-y-1/2 text-center">
             <motion.div
@@ -101,30 +119,25 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Rotating ring */}
-          <div className="orbit-ring absolute inset-0 z-20">
+          {/* Rotating ring — revolves the cards; each card counter-rotates */}
+          <motion.div className="absolute inset-0 z-20" style={{ rotate: angle }}>
             {CARDS.map((card, i) => {
-              const angle = ((START_ANGLE + i * STEP) * Math.PI) / 180;
-              const x = 50 + RADIUS * Math.cos(angle);
-              const y = 50 + RADIUS * Math.sin(angle);
+              const rad = ((START_ANGLE + i * STEP) * Math.PI) / 180;
+              const x = 50 + RADIUS * Math.cos(rad);
+              const y = 50 + RADIUS * Math.sin(rad);
               return (
-                <motion.div
+                <div
                   key={card.n}
                   className="absolute"
                   style={{ left: `${x}%`, top: `${y}%` }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.25 + i * 0.06, duration: 0.5 }}
                 >
                   <div className="-translate-x-1/2 -translate-y-1/2">
-                    <div className="orbit-upright">
-                      <OrbitCard card={card} />
-                    </div>
+                    <OrbitCard card={card} angle={angle} delay={0.25 + i * 0.06} />
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -199,17 +212,34 @@ function CardInner({ card }: { card: Card }) {
   );
 }
 
-function OrbitCard({ card }: { card: Card }) {
+function OrbitCard({
+  card,
+  angle,
+  delay,
+}: {
+  card: Card;
+  angle: MotionValue<number>;
+  delay: number;
+}) {
+  // Cancel the ring's rotation so the card content stays upright.
+  const counter = useTransform(angle, (v) => -v);
   return (
-    <motion.button
-      type="button"
-      whileHover={{ scale: 1.14, zIndex: 40 }}
-      whileFocus={{ scale: 1.14, zIndex: 40 }}
-      transition={{ type: "spring", stiffness: 260, damping: 18 }}
-      className="group w-40 overflow-hidden rounded-xl border border-line bg-surface/85 text-left shadow-[0_12px_34px_-18px_#000] backdrop-blur-md transition-[border-color,box-shadow] hover:border-cyan/70 hover:shadow-[0_0_38px_-8px_var(--color-cyan)] focus-visible:border-cyan/70 focus-visible:shadow-[0_0_38px_-8px_var(--color-cyan)] focus-visible:outline-none"
+    <motion.div
+      style={{ rotate: counter }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay, duration: 0.5 }}
     >
-      <CardInner card={card} />
-    </motion.button>
+      <motion.button
+        type="button"
+        whileHover={{ scale: 1.14, zIndex: 40 }}
+        whileFocus={{ scale: 1.14, zIndex: 40 }}
+        transition={{ type: "spring", stiffness: 260, damping: 18 }}
+        className="group w-40 overflow-hidden rounded-xl border border-line bg-surface/85 text-left shadow-[0_12px_34px_-18px_#000] backdrop-blur-md transition-[border-color,box-shadow] hover:border-cyan/70 hover:shadow-[0_0_38px_-8px_var(--color-cyan)] focus-visible:border-cyan/70 focus-visible:shadow-[0_0_38px_-8px_var(--color-cyan)] focus-visible:outline-none"
+      >
+        <CardInner card={card} />
+      </motion.button>
+    </motion.div>
   );
 }
 

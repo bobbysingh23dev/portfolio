@@ -29,7 +29,7 @@ export function FooterCTA() {
 
           <div className="relative">
             <span className="mono-label text-[11px] text-cyan">
-              04 / OPEN TO WORK
+              05 / OPEN TO WORK
             </span>
             <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-5xl">
               Let&apos;s build something end to end.
