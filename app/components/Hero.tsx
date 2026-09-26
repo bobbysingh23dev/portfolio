@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
@@ -32,12 +31,9 @@ const ORBIT: OrbitCard[] = [
 ];
 
 // Distribute 6 cards evenly around a circle, starting from the top (-90deg).
-// Keeping the left/right axis clear leaves horizontal room for the name.
 const START_ANGLE = -90;
 const STEP = 360 / ORBIT.length;
 const RADIUS = 41; // % of the square orbit container
-// Gentle resting tilt per card for an organic, industrial feel.
-const REST_TILT = [-8, 6, -5, 7, -6, 5];
 
 export function Hero() {
   return (
@@ -60,27 +56,45 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ground"
       />
 
-      {/* ---------- Desktop / tablet: radial orbit ---------- */}
-      <div className="relative z-10 hidden aspect-square w-[min(92vw,720px)] md:block">
-        <div className="absolute left-1/2 top-1/2 z-20 w-[min(80vw,420px)] -translate-x-1/2 -translate-y-1/2 text-center">
+      {/* ---------- Desktop / tablet: rotating radial orbit ---------- */}
+      <div className="relative z-10 hidden aspect-square w-[min(94vw,780px)] md:block">
+        {/* Faint guide ring */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 size-[82%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-line/40"
+        />
+
+        {/* Center identity — stays fixed while the ring turns */}
+        <div className="absolute left-1/2 top-1/2 z-30 w-[min(80vw,420px)] -translate-x-1/2 -translate-y-1/2 text-center">
           <Identity />
         </div>
 
-        {ORBIT.map((card, i) => {
-          const angle = ((START_ANGLE + i * STEP) * Math.PI) / 180;
-          const x = 50 + RADIUS * Math.cos(angle);
-          const y = 50 + RADIUS * Math.sin(angle);
-          return (
-            <OrbitCardView
-              key={card.id}
-              card={card}
-              x={x}
-              y={y}
-              tilt={REST_TILT[i]}
-              delay={0.2 + i * 0.08}
-            />
-          );
-        })}
+        {/* Rotating ring of cards */}
+        <div className="orbit-ring absolute inset-0 z-10">
+          {ORBIT.map((card, i) => {
+            const angle = ((START_ANGLE + i * STEP) * Math.PI) / 180;
+            const x = 50 + RADIUS * Math.cos(angle);
+            const y = 50 + RADIUS * Math.sin(angle);
+            return (
+              <motion.div
+                key={card.id}
+                className="absolute"
+                style={{ left: `${x}%`, top: `${y}%` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 + i * 0.08, duration: 0.5 }}
+              >
+                {/* Center the card on its orbit point */}
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  {/* Counter-rotate so the content stays upright */}
+                  <div className="orbit-upright">
+                    <OrbitCardButton card={card} />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
       {/* ---------- Mobile: stacked identity + card grid ---------- */}
@@ -127,80 +141,42 @@ function Identity() {
   );
 }
 
-/** Shared inner content for both orbit and stacked cards. */
-function CardBody({ card, active }: { card: OrbitCard; active: boolean }) {
+/** Shared inner content — cyan accent driven by the parent `group` hover. */
+function CardBody({ card }: { card: OrbitCard }) {
   const Icon = card.icon;
   return (
     <>
       <div className="flex items-center gap-2">
-        <span
-          className={`flex size-8 items-center justify-center rounded-md border transition-colors sm:size-9 ${
-            active
-              ? "border-cyan/60 bg-cyan/10 text-cyan"
-              : "border-line bg-ground/60 text-ink"
-          }`}
-        >
-          <Icon className="size-4 sm:size-[18px]" strokeWidth={2} />
+        <span className="flex size-9 items-center justify-center rounded-md border border-line bg-ground/60 text-ink transition-colors group-hover:border-cyan/60 group-hover:bg-cyan/10 group-hover:text-cyan group-focus-visible:border-cyan/60 group-focus-visible:bg-cyan/10 group-focus-visible:text-cyan sm:size-11">
+          <Icon className="size-4.5 sm:size-6" strokeWidth={2} />
         </span>
-        <span className="mono-label text-[9px] text-muted">{card.label}</span>
+        <span className="mono-label text-[10px] text-muted">{card.label}</span>
       </div>
-      <p className="mt-2.5 text-sm font-semibold text-white sm:text-[15px]">
+      <p className="mt-3 text-[15px] font-semibold text-white sm:text-lg">
         {card.title}
       </p>
-      <p className="mono-label mt-0.5 text-[9px] text-muted">{card.meta}</p>
+      <p className="mono-label mt-1 text-[10px] text-muted">{card.meta}</p>
     </>
   );
 }
 
-function OrbitCardView({
-  card,
-  x,
-  y,
-  tilt,
-  delay,
-}: {
-  card: OrbitCard;
-  x: number;
-  y: number;
-  tilt: number;
-  delay: number;
-}) {
-  const [hovered, setHovered] = useState(false);
-
+/** A card in the rotating ring. Scales up + glows on hover, in place. */
+function OrbitCardButton({ card }: { card: OrbitCard }) {
   return (
-    <motion.div
-      className="absolute z-10"
-      style={{ left: `${x}%`, top: `${y}%` }}
-      initial={{ opacity: 0, scale: 0.4 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay, type: "spring", stiffness: 120, damping: 14 }}
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.2, zIndex: 40 }}
+      whileFocus={{ scale: 1.2, zIndex: 40 }}
+      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+      className="group relative w-44.5 rounded-2xl border border-line bg-surface/85 p-4 text-left shadow-[0_10px_30px_-18px_#000] backdrop-blur-md transition-[border-color,box-shadow] hover:border-cyan/70 hover:shadow-[0_0_34px_-6px_var(--color-cyan)] focus-visible:border-cyan/70 focus-visible:shadow-[0_0_34px_-6px_var(--color-cyan)] focus-visible:outline-none sm:p-5"
     >
-      <motion.button
-        type="button"
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
-        animate={{
-          rotate: hovered ? 0 : tilt,
-          scale: hovered ? 1.2 : 1,
-          zIndex: hovered ? 40 : 10,
-        }}
-        transition={{ type: "spring", stiffness: 260, damping: 18 }}
-        className={`group relative -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-surface/80 p-3 text-left backdrop-blur-md sm:p-4 ${
-          hovered
-            ? "border-cyan/70 shadow-[0_0_34px_-6px_var(--color-cyan)]"
-            : "border-line shadow-[0_10px_30px_-18px_#000]"
-        }`}
-      >
-        <CardBody card={card} active={hovered} />
-      </motion.button>
-    </motion.div>
+      <CardBody card={card} />
+    </motion.button>
   );
 }
 
+/** A card in the mobile stacked grid (no rotation). */
 function StackCard({ card, delay }: { card: OrbitCard; delay: number }) {
-  const [active, setActive] = useState(false);
   return (
     <motion.button
       type="button"
@@ -208,15 +184,9 @@ function StackCard({ card, delay }: { card: OrbitCard; delay: number }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4, ease: "easeOut" }}
       whileTap={{ scale: 0.97 }}
-      onHoverStart={() => setActive(true)}
-      onHoverEnd={() => setActive(false)}
-      onFocus={() => setActive(true)}
-      onBlur={() => setActive(false)}
-      className={`rounded-xl border bg-surface/80 p-3 text-left backdrop-blur-md transition-colors ${
-        active ? "border-cyan/60" : "border-line"
-      }`}
+      className="group rounded-xl border border-line bg-surface/80 p-3 text-left backdrop-blur-md transition-colors hover:border-cyan/60 focus-visible:border-cyan/60 focus-visible:outline-none"
     >
-      <CardBody card={card} active={active} />
+      <CardBody card={card} />
     </motion.button>
   );
 }

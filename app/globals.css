@@ -51,6 +51,46 @@ body {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 20%, transparent 75%);
 }
 
+/* ------------------------------------------------------------------ *
+ * Hero orbit rotation.
+ * The ring revolves the cards around the center; each card counter-
+ * rotates by the same amount so its content stays upright (net 0deg).
+ * Both share --orbit-duration so they stay perfectly in sync.
+ * ------------------------------------------------------------------ */
+@keyframes orbit-revolve {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes orbit-upright {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.orbit-ring {
+  --orbit-duration: 42s;
+  animation: orbit-revolve var(--orbit-duration) linear infinite;
+  will-change: transform;
+}
+.orbit-upright {
+  animation: orbit-upright var(--orbit-duration, 42s) linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring,
+  .orbit-upright {
+    animation: none;
+  }
+}
+
 /* Monospace label styling reused across sections */
 .mono-label {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
