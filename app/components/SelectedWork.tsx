@@ -1,14 +1,18 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
   Database,
+  ExternalLink,
   Layers,
   Server,
   Smartphone,
+  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
+import { GitHubIcon } from "./BrandIcons";
 
 type Project = {
   id: string;
@@ -16,7 +20,13 @@ type Project = {
   description: string;
   tech: string[];
   icon: LucideIcon;
-  accent: string; // gradient used for the preview panel
+  accent: string; // gradient used when there's no screenshot
+  // Fill these in with your real material — each is optional and only
+  // renders when present, so nothing shows a dead link or fake metric.
+  image?: string; // e.g. "/projects/mobile.png" (place file in /public)
+  demo?: string; // live demo URL
+  repo?: string; // GitHub repo URL
+  impact?: string; // one-line outcome, e.g. "Cut p95 latency 320ms → 90ms"
 };
 
 const PROJECTS: Project[] = [
@@ -82,41 +92,69 @@ export function SelectedWork() {
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const Icon = project.icon;
+  const hasLinks = Boolean(project.demo || project.repo);
   return (
     <motion.article
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5, delay: (index % 2) * 0.08, ease: "easeOut" }}
-      className="group relative overflow-hidden rounded-2xl border border-line bg-surface/70 backdrop-blur-md transition-colors hover:border-cyan/50"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface/70 backdrop-blur-md transition-colors hover:border-cyan/50"
     >
-      {/* Preview panel */}
-      <div
-        className="relative flex h-44 items-center justify-center overflow-hidden border-b border-line sm:h-52"
-        style={{ background: project.accent }}
-      >
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-40 grid-backdrop"
-        />
-        <Icon
-          className="size-14 text-cyan/80 transition-transform duration-500 group-hover:scale-110"
-          strokeWidth={1.3}
-        />
-        <span className="mono-label absolute left-4 top-4 rounded-md border border-line bg-ground/70 px-2 py-1 text-[10px] text-cyan">
+      {/* Preview panel — real screenshot if provided, else gradient */}
+      <div className="relative flex h-44 items-center justify-center overflow-hidden border-b border-line sm:h-52">
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt={`${project.title} preview`}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ background: project.accent }}
+          >
+            <div aria-hidden className="absolute inset-0 opacity-40 grid-backdrop" />
+            <Icon
+              className="size-14 text-cyan/80 transition-transform duration-500 group-hover:scale-110"
+              strokeWidth={1.3}
+            />
+          </div>
+        )}
+        <span className="mono-label absolute left-4 top-4 z-10 rounded-md border border-line bg-ground/70 px-2 py-1 text-[10px] text-cyan backdrop-blur-sm">
           PROJECT {project.id}
         </span>
-        <ArrowUpRight className="absolute right-4 top-4 size-5 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-cyan" />
+        {(project.demo ?? project.repo) && (
+          <a
+            href={project.demo ?? project.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${project.title}`}
+            className="absolute right-4 top-4 z-10 flex size-8 items-center justify-center rounded-md border border-line bg-ground/70 text-muted backdrop-blur-sm transition-all hover:border-cyan/60 hover:text-cyan"
+          >
+            <ArrowUpRight className="size-4" />
+          </a>
+        )}
       </div>
 
       {/* Body */}
-      <div className="p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="text-lg font-semibold text-white sm:text-xl">
           {project.title}
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           {project.description}
         </p>
+
+        {project.impact && (
+          <p className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-cyan">
+            <TrendingUp className="size-4 shrink-0" />
+            {project.impact}
+          </p>
+        )}
+
         <ul className="mt-4 flex flex-wrap gap-2">
           {project.tech.map((t) => (
             <li
@@ -127,6 +165,33 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </li>
           ))}
         </ul>
+
+        {hasLinks && (
+          <div className="mt-5 flex flex-wrap gap-3 border-t border-line pt-4">
+            {project.demo && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-cyan"
+              >
+                <ExternalLink className="size-4" />
+                Live demo
+              </a>
+            )}
+            {project.repo && (
+              <a
+                href={project.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-cyan"
+              >
+                <GitHubIcon className="size-4" />
+                Source
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </motion.article>
   );

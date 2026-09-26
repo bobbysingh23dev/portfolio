@@ -8,7 +8,7 @@ type Column = {
   icon: LucideIcon;
   label: string;
   title: string;
-  skills: { name: string; level: number }[];
+  skills: string[];
 };
 
 const COLUMNS: Column[] = [
@@ -17,11 +17,12 @@ const COLUMNS: Column[] = [
     label: "CLIENT",
     title: "Frontend",
     skills: [
-      { name: "React.js", level: 95 },
-      { name: "Next.js", level: 92 },
-      { name: "React Native", level: 88 },
-      { name: "Tailwind CSS", level: 90 },
-      { name: "TypeScript", level: 93 },
+      "React.js",
+      "Next.js",
+      "React Native",
+      "TypeScript",
+      "Tailwind CSS",
+      "Framer Motion",
     ],
   },
   {
@@ -29,11 +30,12 @@ const COLUMNS: Column[] = [
     label: "SERVER",
     title: "Backend & APIs",
     skills: [
-      { name: "Node.js", level: 93 },
-      { name: "Express", level: 90 },
-      { name: "REST / WebSockets", level: 88 },
-      { name: "Redis", level: 80 },
-      { name: "Auth & Sessions", level: 85 },
+      "Node.js",
+      "Express",
+      "REST",
+      "WebSockets",
+      "Redis",
+      "Auth & Sessions",
     ],
   },
   {
@@ -41,11 +43,12 @@ const COLUMNS: Column[] = [
     label: "STORAGE",
     title: "Database & Systems",
     skills: [
-      { name: "PostgreSQL", level: 92 },
-      { name: "SQL", level: 90 },
-      { name: "Drizzle ORM", level: 86 },
-      { name: "Schema Design", level: 89 },
-      { name: "Git / CI", level: 84 },
+      "PostgreSQL",
+      "SQL",
+      "Drizzle ORM",
+      "Schema Design",
+      "Git",
+      "CI/CD",
     ],
   },
 ];
@@ -59,9 +62,9 @@ export function TechMatrix() {
       <div aria-hidden className="pointer-events-none absolute inset-0 grid-backdrop opacity-60" />
       <div className="relative mx-auto max-w-7xl px-5 py-24 sm:px-8">
         <SectionHeading
-          index="03 / PROFICIENCY MATRIX"
-          title="Telemetry system matrix"
-          blurb="Core competencies across the three layers I ship in — measured, not decorative."
+          index="03 / TECH STACK"
+          title="The tools I build with"
+          blurb="Grouped by the three layers I ship in — client, server, and the data underneath."
         />
 
         <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -94,28 +97,13 @@ function MatrixColumn({ column, index }: { column: Column; index: number }) {
         </div>
       </div>
 
-      <ul className="mt-5 space-y-4">
-        {column.skills.map((skill, si) => (
-          <li key={skill.name}>
-            <div className="mb-1.5 flex items-center justify-between">
-              <span className="text-sm text-ink/90">{skill.name}</span>
-              <span className="mono-label text-[10px] text-muted">
-                {skill.level}
-              </span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-ground">
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-dim to-cyan"
-                initial={{ width: 0 }}
-                whileInView={{ width: `${skill.level}%` }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.9,
-                  delay: index * 0.1 + si * 0.06,
-                  ease: "easeOut",
-                }}
-              />
-            </div>
+      <ul className="mt-5 flex flex-wrap gap-2">
+        {column.skills.map((skill) => (
+          <li
+            key={skill}
+            className="rounded-md border border-line bg-ground/50 px-3 py-1.5 text-sm text-ink/90 transition-colors hover:border-cyan/50 hover:text-cyan"
+          >
+            {skill}
           </li>
         ))}
       </ul>

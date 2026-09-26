@@ -13,6 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // TODO: set this to your real deployed domain so OG/absolute URLs resolve.
+  metadataBase: new URL("https://bobby-singh.vercel.app"),
   title: "Bobby Singh // Full Stack Developer",
   description:
     "Bobby Singh — Full Stack Developer building end-to-end products with React Native, React.js, Next.js, Node.js and PostgreSQL.",
