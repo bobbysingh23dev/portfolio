@@ -6,7 +6,9 @@ import {
   useAnimationFrame,
   useMotionValue,
   useReducedMotion,
+  useScroll,
   useTransform,
+  useVelocity,
   type MotionValue,
 } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -44,15 +46,33 @@ const TONE_BG: Record<Card["tone"], string> = {
   amber: "radial-gradient(120% 100% at 50% 0%, rgba(251,191,36,0.16), transparent 60%), #0b1120",
 };
 
-const ORBIT_DURATION = 44000; // ms per full revolution
+const ORBIT_DURATION = 44000; // ms per full base revolution (steady clockwise drift)
+const SCROLL_INFLUENCE = 0.08; // how strongly scroll speed feeds into spin
+const MAX_SCROLL_VEL = 4000; // clamp px/s so a flick can't spin it wildly
 
 export function Hero() {
   // One shared rotation value drives the ring AND every card's counter-rotation,
   // so they can never drift out of sync (which tilts individual cards).
   const reduce = useReducedMotion();
   const angle = useMotionValue(0);
-  useAnimationFrame((t) => {
-    if (!reduce) angle.set(((t / ORBIT_DURATION) * 360) % 360);
+
+  // Scroll velocity: positive when scrolling down, negative when scrolling up.
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const baseSpeed = 360 / ORBIT_DURATION; // deg per ms of steady drift
+
+  useAnimationFrame((_, delta) => {
+    if (reduce) return;
+    const d = Math.min(delta, 64); // clamp big gaps (e.g. inactive tab)
+    const v = Math.max(
+      -MAX_SCROLL_VEL,
+      Math.min(MAX_SCROLL_VEL, scrollVelocity.get()),
+    );
+    // Steady clockwise drift + a transient nudge from scroll direction/speed.
+    // Down (v>0) speeds up clockwise; up (v<0) can push it anti-clockwise.
+    const baseDeg = baseSpeed * d;
+    const scrollDeg = v * SCROLL_INFLUENCE * (d / 1000);
+    angle.set(angle.get() + baseDeg + scrollDeg);
   });
 
   return (
@@ -120,7 +140,11 @@ export function Hero() {
           </div>
 
           {/* Rotating ring — revolves the cards; each card counter-rotates */}
-          <motion.div className="absolute inset-0 z-20" style={{ rotate: angle }}>
+          <motion.div
+            data-orbit-ring
+            className="absolute inset-0 z-20"
+            style={{ rotate: angle }}
+          >
             {CARDS.map((card, i) => {
               const rad = ((START_ANGLE + i * STEP) * Math.PI) / 180;
               const x = 50 + RADIUS * Math.cos(rad);
